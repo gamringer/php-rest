@@ -2,6 +2,7 @@
 
 namespace gamringer\PHPREST\Example\Models;
 
+use \Psr\Http\Message\RequestInterface;
 use \gamringer\PHPREST\Resources\Item as BaseItem;
 use \gamringer\PHPREST\Example\Models\Collections\BookCollection;
 
@@ -21,6 +22,15 @@ class AuthorModel extends BaseItem
 
         if (is_numeric($slug)) {
             $this->addFilter('id', $slug);
+        }
+    }
+
+    public function route(RequestInterface $request)
+    {
+        switch (strtolower($request->getMethod())) {
+            case 'get':
+                $this->handleGet($request);
+                break;
         }
     }
 

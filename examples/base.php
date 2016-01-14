@@ -6,23 +6,25 @@ error_reporting(E_ALL);
 
 include dirname(__FILE__).'/../vendor/autoload.php';
 
-use \gamringer\PHPREST\Kernel;
+use \gamringer\PHPREST\RESTKernel;
 use \gamringer\PHPREST\Environment;
 use \gamringer\PHPREST\Router;
 use \gamringer\PHPREST\Example\FooAPI;
 use \League\Container\Container;
 
 $root = FooAPI::getRoot();
+
 $router = new \gamringer\PHPREST\JPRouter();
 $router->setRoot($root);
 
-$environment = Environment::fromGlobals();
-$kernel = new Kernel($environment);
-$kernel->setRouter($router);
-$kernel->setPathLocation('/php-rest.php');
+$dispatcher = new \gamringer\PHPREST\JPDispatcher($router);
+$dispatcher->setPathLocation('/php-rest.php');
 
-$request = $environment->getRequest();
-$response = $kernel->handle($request);
+$environment = Environment::fromGlobals();
+$kernel = new RESTKernel($environment);
+$kernel->setDispatcher($dispatcher);
+
+$response = $kernel->handle($environment->getRequest());
 $kernel->send($response);
 
 $kernel->shutdown();

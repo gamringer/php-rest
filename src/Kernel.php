@@ -10,22 +10,16 @@ use \League\Container\Container;
 class Kernel
 {
     protected $environment;
-    protected $router;
-    protected $pathLocation = '';
+    protected $dispatcher;
 
     public function __construct(Environment $environment)
     {
         $this->environment = $environment;
     }
 
-    public function setRouter($router)
+    public function setDispatcher($dispatcher)
     {
-        $this->router = $router;
-    }
-
-    public function setPathLocation($pathLocation)
-    {
-        $this->pathLocation = $pathLocation;
+        $this->dispatcher = $dispatcher;
     }
 
     public function getEnvironment()
@@ -33,26 +27,20 @@ class Kernel
         return $this->environment;
     }
 
-    public function getApplicationPath($path)
-    {
-        if (!empty($this->pathLocation)) {
-            $path = preg_replace('#^'.$this->pathLocation.'#', '', $path);
-        }
-
-        return $path;
-    }
-
     public function handle(RequestInterface $request)
     {
+        /*
         $path = $this->getApplicationPath($request->getUri()->getPath());
         $resource = $this->router->route($path);
-        var_dump($resource);
-        exit;
+
+        $response = $resource->receive($request);
+
         $response = new Psr7\Response(200, [
             'Content-Type' => 'application/json'
         ], 'salut');
 
         return $response;
+        */
     }
 
     public function send(ResponseInterface $response)

@@ -5,11 +5,14 @@ namespace gamringer\PHPREST;
 use \gamringer\JSONPointer\Pointer;
 use \Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7;
+use \League\Container\ContainerAwareInterface;
+use \League\Container\ContainerAwareTrait;
 
 class JPDispatcher
 {
+    use ContainerAwareTrait;
+
     protected $router;
-    protected $pathLocation = '';
     protected $resourceControllers = [];
 
     public function __construct(JPRouter $router)
@@ -17,26 +20,19 @@ class JPDispatcher
         $this->router = $router;
     }
 
-    public function setPathLocation($pathLocation)
+    public function defineController($method, $model, $serviceCallable)
     {
-        $this->pathLocation = $pathLocation;
-    }
-
-    public function getApplicationPath($path)
-    {
-        if (!empty($this->pathLocation)) {
-            $path = preg_replace('#^'.$this->pathLocation.'#', '', $path);
-        }
-
-        return $path;
+        $this->resourceControllers[$model][$method] = $serviceCallable;
     }
 
     public function dispatch(RequestInterface $request)
     {
-        $path = $this->getApplicationPath($request->getUri()->getPath());
+        $path = $request->getUri()->getPath();
+
         $resource = $this->router->route($path);
-        
+
         $resourceFQCN = get_class($resource);
+        
         if (!array_key_exists($resourceFQCN, $this->resourceControllers)) {
             throw new Exception('Routed resource not handled');
         }
@@ -44,12 +40,15 @@ class JPDispatcher
             throw new Exception('Method not handled for the routed resource');
         }
 
-        $this->resourceControllers[$resourceFQCN][$request->getMethod()]($request, $resource);
+        $serviceCallable = $this->resourceControllers[$resourceFQCN][$request->getMethod()];
+        if (
+            isset($this->container)
+         && preg_match('/([\w-]*)::(\w*)/', $serviceCallable, $matches)
+         && $this->container->has($matches[1])
+        ) {
+            $serviceCallable = [$this->container->get($matches[1]), $matches[2]];
+        }
 
-        $response = new Psr7\Response(200, [
-            'Content-Type' => 'application/json'
-        ], 'salut');
-
-        return $response;
+        return $serviceCallable($request, $resource);
     }
 }

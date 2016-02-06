@@ -10,9 +10,12 @@ class JPRouter
     protected $root;
     protected $accessors;
 
-    public function __construct()
+    public function __construct(&$root = null)
     {
         $this->pointer = new Pointer();
+        if ($root !== null) {
+            $this->setRoot($root);
+        }
     }
 
     public function setRoot(&$root)

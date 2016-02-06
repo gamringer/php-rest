@@ -4,22 +4,27 @@ namespace gamringer\PHPREST;
 
 use GuzzleHttp\Psr7;
 
-class HTTPEnvironment extends Environment
+class HTTPEnvironment extends environment
 {
-    public function __construct()
+    protected $request;
+
+    public function __construct($environment, $output, $input, $headers)
     {
-        $this->stdOut = Psr7\stream_for(fopen('php://output', 'w'));
+        $this->stdOut = Psr7\stream_for($output);
+        $this->environment = $environment;
+
+        list($protocolName, $protocolVersion) = explode('/', $environment['SERVER_PROTOCOL']);
+        $this->request = new Psr7\Request(
+            $environment['REQUEST_METHOD'],
+            $environment['REQUEST_SCHEME'].'://'.$environment['HTTP_HOST'].$environment['REQUEST_URI'],
+            $headers,
+            $input,
+            $protocolVersion
+        );
     }
 
     public function getRequest()
     {
-        list($protocolName, $protocolVersion) = explode('/', $_SERVER['SERVER_PROTOCOL']);
-        return new Psr7\Request(
-            $_SERVER['REQUEST_METHOD'],
-            $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-            getallheaders(),
-            fopen('php://input', 'r'),
-            $protocolVersion
-        );
+        return $this->request;
     }
 }

@@ -14,7 +14,8 @@
         "php": ">=5.4",
         "gamringer/php-json-pointer": "@stable",
         "guzzlehttp/psr7": "@stable",
-        "league/container": "^2.0"
+        "league/container": "^2.0",
+        "relay/relay": "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit" : "4.*"

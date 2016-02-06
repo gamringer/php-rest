@@ -5,24 +5,34 @@ ini_set('display_errors', true);
 error_reporting(E_ALL);
 
 include dirname(__FILE__).'/../vendor/autoload.php';
+/*
+$container = new League\Container\Container();
+$container->share('controllers-author_item', 'gamringer\PHPREST\Example\Controllers\AuthorController');
 
-use \gamringer\PHPREST\RESTKernel;
-use \gamringer\PHPREST\Environment;
-use \gamringer\PHPREST\Router;
-use \gamringer\PHPREST\Example\FooAPI;
-use \League\Container\Container;
+$environment = gamringer\PHPREST\Environment::fromGlobals();
+$root = \gamringer\PHPREST\Example\FooAPI::getRoot();
 
-$root = FooAPI::getRoot();
-
-$router = new \gamringer\PHPREST\JPRouter();
-$router->setRoot($root);
+$router = new \gamringer\PHPREST\JPRouter($root);
 
 $dispatcher = new \gamringer\PHPREST\JPDispatcher($router);
-$dispatcher->setPathLocation('/php-rest.php');
+$dispatcher->setContainer($container);
+$dispatcher->defineController(
+    'GET',
+    \gamringer\PHPREST\Example\Models\AuthorModel::class,
+    'controllers-author_item::handleGet'
+);
 
-$environment = Environment::fromGlobals();
-$kernel = new RESTKernel($environment);
-$kernel->setDispatcher($dispatcher);
+$request = $environment->getRequest();
+$uri = $request->getUri();
+$uri = $uri->withPath('/authors/22');
+$request = $request->withUri($uri);
+$response = $dispatcher->dispatch($request);
+var_dump($response->getBody()->getContents());
+
+exit;
+*/
+$environment = gamringer\PHPREST\Environment::fromGlobals();
+$kernel = new gamringer\PHPREST\Example\Kernel($environment);
 
 $response = $kernel->handle($environment->getRequest());
 $kernel->send($response);

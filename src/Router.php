@@ -4,7 +4,7 @@ namespace gamringer\PHPREST;
 
 use \gamringer\JSONPointer\Pointer;
 
-class JPRouter
+class Router
 {
     protected $pointer;
     protected $root;

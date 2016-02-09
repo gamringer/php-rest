@@ -8,14 +8,14 @@ use \GuzzleHttp\Psr7;
 use \League\Container\ContainerAwareInterface;
 use \League\Container\ContainerAwareTrait;
 
-class JPDispatcher
+class Dispatcher
 {
     use ContainerAwareTrait;
 
     protected $router;
     protected $resourceControllers = [];
 
-    public function __construct(JPRouter $router)
+    public function __construct(Router $router)
     {
         $this->router = $router;
     }

@@ -25,15 +25,6 @@ class AuthorModel extends BaseItem
         }
     }
 
-    public function route(RequestInterface $request)
-    {
-        switch (strtolower($request->getMethod())) {
-            case 'get':
-                $this->handleGet($request);
-                break;
-        }
-    }
-
     public function getBooks()
     {
         return new BookCollection();

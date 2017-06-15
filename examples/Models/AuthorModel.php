@@ -2,7 +2,6 @@
 
 namespace gamringer\PHPREST\Example\Models;
 
-use \Psr\Http\Message\RequestInterface;
 use \gamringer\PHPREST\Resources\Item as BaseItem;
 use \gamringer\PHPREST\Example\Models\Collections\BookCollection;
 

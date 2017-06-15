@@ -17,20 +17,13 @@ class Kernel extends BaseKernel
         $container = new Container();
         $container->addServiceProvider(new ServiceProvider());
         
-        $router = new Router();
         $root = FooAPI::getRoot();
-        $router->setRoot($root);
-
-        $dispatcher = new Dispatcher($router);
-        $dispatcher->setContainer($container);
-        $dispatcher->defineController(
-            'GET',
-            \gamringer\PHPREST\Example\Models\AuthorModel::class,
-            'controllers-author_item::handleGet'
-        );
+        $router = new Router($root);
+        $router->getDispatcher()->setContainer($container);
+        $router->addProvider(new RouteProvider());
 
         $this->queueMiddleware(new CatchAll());
         $this->queueMiddleware(new RequestReroot($this->environment->getValue('SCRIPT_NAME')));
-        $this->queueMiddleware(new JDispatch($dispatcher));
+        $this->queueMiddleware(new JDispatch($router->getDispatcher()));
     }
 }

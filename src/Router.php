@@ -3,12 +3,14 @@
 namespace gamringer\PHPREST;
 
 use \gamringer\JSONPointer\Pointer;
+use \gamringer\PHPREST\Routing\ProvidesRoutes;
 
 class Router
 {
     protected $pointer;
     protected $root;
     protected $accessors;
+    protected $dispatcher;
 
     public function __construct(&$root = null)
     {
@@ -16,6 +18,13 @@ class Router
         if ($root !== null) {
             $this->setRoot($root);
         }
+
+        $this->dispatcher = new Dispatcher($this);
+    }
+
+    public function addProvider(ProvidesRoutes $provider)
+    {
+        $provider->feed($this);
     }
 
     public function setRoot(&$root)
@@ -48,5 +57,15 @@ class Router
     public function route($path)
     {
         return $this->pointer->get($path);
+    }
+
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    public function addRoute($method, $model, $serviceCallable)
+    {
+        $this->dispatcher->defineController($method, $model, $serviceCallable);
     }
 }

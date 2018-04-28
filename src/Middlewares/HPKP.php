@@ -2,11 +2,11 @@
 
 namespace gamringer\PHPREST\Middlewares;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Relay\MiddlewareInterface;
+use \Psr\Http\Message\RequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \Telegraph\MiddlewareInterface;
 
-class JDispatch implements MiddlewareInterface
+class HPKP implements MiddlewareInterface
 {
     protected $pins;
     protected $maxAge;
@@ -26,9 +26,9 @@ class JDispatch implements MiddlewareInterface
         $this->reportOnly = $reportOnly;
     }
 
-    public function __invoke (RequestInterface $request, ResponseInterface $response, callable $next = null)
+    public function __invoke (RequestInterface $request, callable $next = null)
     {
-        $response = $next($request, $response);
+        $response = $next($request);
 
         $headerValue = '';
         foreach ($this->pins as $pin) {

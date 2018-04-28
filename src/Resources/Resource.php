@@ -3,10 +3,13 @@
 namespace gamringer\PHPREST\Resources;
 
 use gamringer\PHPREST\Exceptions\RequestHandlingException;
+use gamringer\PHPREST\Exceptions\MethodNotSupportedException;
 
 abstract class Resource implements HasParent
 {
     use Child;
+
+    protected static $handlers = [];
 
     protected $filters = [];
 
@@ -41,5 +44,32 @@ abstract class Resource implements HasParent
             'comparator' => $comparator,
             'value' => $value
         ];
+    }
+
+    public function getFilters(?string $property = null): array
+    {
+        if ($property === null) {
+            return $this->filters;
+        }
+
+        if (!array_key_exists($property, $this->filters)) {
+            return [];
+        }
+
+        return $this->filters[$property];
+    }
+
+    public function getMethodHandler($method)
+    {
+        if (!array_key_exists($method, static::$handlers)) {
+            throw new MethodNotSupportedException($this, 'Method '.$method.' is not supported by resource ' . static::class, 2);
+        }
+
+        return static::$handlers[$method];
+    }
+
+    public function getSupportedMethods()
+    {
+        return array_keys(static::$handlers);
     }
 }

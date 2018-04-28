@@ -4,7 +4,7 @@ namespace gamringer\PHPREST\Middlewares;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Relay\MiddlewareInterface;
+use Telegraph\MiddlewareInterface;
 
 class RequestReroot implements MiddlewareInterface
 {
@@ -15,11 +15,11 @@ class RequestReroot implements MiddlewareInterface
         $this->location = $location;
     }
 
-    public function __invoke (RequestInterface $request, ResponseInterface $response, callable $next = null)
+    public function __invoke (RequestInterface $request, callable $next = null)
     {
         $path = preg_replace('#^'.$this->location.'#', '', $request->getUri()->getPath());
         $uri = $request->getUri()->withPath($path);
 
-        return $next($request->withUri($uri), $response);
+        return $next($request->withUri($uri));
     }
 }

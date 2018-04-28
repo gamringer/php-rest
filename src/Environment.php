@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gamringer\PHPREST;
 
 use GuzzleHttp\Psr7\Request;
@@ -7,6 +9,7 @@ use GuzzleHttp\Psr7\Request;
 class Environment
 {
     protected $stdOut;
+    protected $stdIn;
     protected $environment;
 
     public function getStdOut()
@@ -14,13 +17,18 @@ class Environment
         return $this->stdOut;
     }
 
-    public static function fromGlobals()
+    public static function fromGlobals(): Environment
     {
         if (PHP_SAPI == 'cli') {
             return new CLIEnvironment($_SERVER, STDOUT, STDIN, STDERR);
         }
-        
-        return new HTTPEnvironment($_SERVER, fopen('php://output', 'w'), fopen('php://input', 'r'), getallheaders());
+
+        return new HTTPEnvironment($_SERVER, fopen('php://output', 'w'), fopen('php://input', 'r+'), [
+            'get' => $_GET,
+            'post' => $_POST,
+            'files' => $_FILES,
+            'cookies' => $_COOKIE,
+        ]);
     }
 
     public function getValue($index)

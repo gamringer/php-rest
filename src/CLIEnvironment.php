@@ -6,8 +6,10 @@ use GuzzleHttp\Psr7\Request;
 
 class CLIEnvironment extends Environment
 {
-    public function __construct()
+    public function __construct($environment, $output, $input)
     {
-        $this->stdOut = STDOUT;
+        $this->stdIn = Psr7\stream_for($input);
+        $this->stdOut = Psr7\stream_for($output);
+        $this->environment = $environment;
     }
 }

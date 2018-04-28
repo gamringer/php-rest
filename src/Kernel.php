@@ -1,64 +1,74 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gamringer\PHPREST;
 
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Relay\MiddlewareInterface;
-use \Relay\RelayBuilder;
 use \GuzzleHttp\Psr7;
-use \League\Container\Container;
+use \Telegraph;
+use \Telegraph\MiddlewareInterface;
+use \Telegraph\DispatcherInterface;
 
 class Kernel
 {
     protected $environment;
-    protected $dispatcher;
     protected $middlewares = [];
-    protected $relay;
 
     public function __construct(Environment $environment)
     {
         $this->environment = $environment;
 
-        $this->init();
+        $this->initialize();
 
-        $this->relay = (new RelayBuilder())->newInstance($this->middlewares);
+        $this->setDispatcher(new Telegraph\Dispatcher($this->middlewares));
     }
 
-    public function setDispatcher($dispatcher)
+    public function setDispatcher(DispatcherInterface $dispatcher): void
     {
         $this->dispatcher = $dispatcher;
     }
 
-    public function getEnvironment()
+    public function getEnvironment(): Environment
     {
         return $this->environment;
     }
 
-    public function handle(RequestInterface $request)
+    public function handle(RequestInterface $request): ResponseInterface
     {
-        return $this->relay->__invoke($request, new Psr7\Response());
+        return $this->dispatcher->dispatch($request);
     }
 
-    public function send(ResponseInterface $response)
+    public function send(ResponseInterface $response): void
     {
         http_response_code($response->getStatusCode());
 
         foreach ($response->getHeaders() as $header => $values) {
             foreach ($values as $value) {
-                header($header . ':' . $value, false);
+                header($header . ': ' . $value, false);
+                $this->container->get('logger-error')->debug('Setting Header: '.$header);
             }
         }
-        
+
+        $size = $response->getBody()->getSize();
+        if ($size > 0) {
+            header('Content-Length: ' . $size);
+        }
         Psr7\copy_to_stream($response->getBody(), $this->environment->getStdOut());
     }
 
-    public function shutdown()
+    public function initialize(): void
     {
-        
+
     }
 
-    protected function queueMiddleware(MiddlewareInterface $middleware)
+    public function shutdown(): void
+    {
+
+    }
+
+    protected function queueMiddleware(MiddlewareInterface $middleware): void
     {
         $this->middlewares[] = $middleware;
     }

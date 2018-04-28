@@ -1,30 +1,125 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gamringer\PHPREST;
 
 use GuzzleHttp\Psr7;
 
-class HTTPEnvironment extends environment
+class HTTPEnvironment extends Environment
 {
     protected $request;
+    protected $parsed;
 
-    public function __construct($environment, $output, $input, $headers)
+    public function __construct($environment, $output, $input, $parsed = [])
     {
+        $this->stdIn = Psr7\stream_for($input);
         $this->stdOut = Psr7\stream_for($output);
         $this->environment = $environment;
-
-        list($protocolName, $protocolVersion) = explode('/', $environment['SERVER_PROTOCOL']);
-        $this->request = new Psr7\Request(
-            $environment['REQUEST_METHOD'],
-            $environment['REQUEST_SCHEME'].'://'.$environment['HTTP_HOST'].$environment['REQUEST_URI'],
-            $headers,
-            $input,
-            $protocolVersion
-        );
+        $this->parsed = $parsed;
     }
 
-    public function getRequest()
+    public function getRequest(): Psr7\ServerRequest
     {
+        if (!isset($this->request)) {
+            list($protocolName, $protocolVersion) = explode('/', $this->environment['SERVER_PROTOCOL']);
+            $scheme = 'http';
+            if (array_key_exists('HTTPS', $this->environment) && ['HTTPS'] == 'on') {
+                $scheme = 'https';
+            }
+
+            $headers = $this->getallheaders();
+
+            $this->request = new Psr7\ServerRequest(
+                $this->environment['REQUEST_METHOD'],
+                $scheme.'://'.$this->environment['HTTP_HOST'].$this->environment['REQUEST_URI'],
+                $headers,
+                $this->stdIn,
+                $protocolVersion
+            );
+
+            if (array_key_exists('get', $this->parsed)) {
+                $this->request = $this->request->withQueryParams($this->parsed['get']);
+            }
+            if (array_key_exists('cookies', $this->parsed)) {
+                $this->request = $this->request->withCookieParams($this->parsed['cookies']);
+            }
+            if(!array_key_exists('Content-Type', $headers)){
+            } elseif ($headers['Content-Type'] == 'application/json') {
+                $this->request = $this->request->withParsedBody(json_decode(Psr7\copy_to_string($this->stdIn)));
+            } elseif ($headers['Content-Type'] == 'application/x-www-form-urlencoded') {
+                $this->request = $this->request->withParsedBody($this->parsed['post']);
+            } elseif ($headers['Content-Type'] == 'multipart/form-data') {
+                $this->request = $this->request
+                            ->withParsedBody($this->parsed['post'])
+                            ->withUploadedFiles(Psr7\ServerRequest::normalizeFiles($parsed['files']))
+                ;
+            }
+        }
+
         return $this->request;
+    }
+
+    private function getallheaders(): array
+    {
+        $headers = array();
+
+        $copy_server = array(
+            'CONTENT_TYPE'   => 'Content-Type',
+            'CONTENT_LENGTH' => 'Content-Length',
+            'CONTENT_MD5'    => 'Content-Md5',
+        );
+
+        foreach ($this->environment as $key => $value) {
+            if (substr($key, 0, 5) === 'HTTP_') {
+                $key = substr($key, 5);
+                if (!isset($copy_server[$key]) || !isset($this->environment[$key])) {
+                    $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
+                    $headers[$key] = $value;
+                }
+            } elseif (isset($copy_server[$key])) {
+                $headers[$copy_server[$key]] = $value;
+            }
+        }
+
+        if (!isset($headers['Authorization'])) {
+            $authValue = $this->composeAuthorizationHeaderValue();
+            if ($authValue !== null) {
+                $headers['Authorization'] = $authValue;
+            }
+        }
+
+        return $headers;
+    }
+
+    public function getClientIP(): string
+    {
+        return $this->environment['REMOTE_ADDR'];
+    }
+
+    public function getClientCertificate(): ?string
+    {
+        if (array_key_exists('SSL_CLIENT_CERT', $this->environment)
+         && !empty($this->environment['SSL_CLIENT_CERT'])) {
+            return $this->environment['SSL_CLIENT_CERT'];
+        }
+
+        return null;
+    }
+
+    private function composeAuthorizationHeaderValue(): ?string
+    {
+        if (isset($this->environment['REDIRECT_HTTP_AUTHORIZATION'])) {
+            return $this->environment['REDIRECT_HTTP_AUTHORIZATION'];
+
+        } elseif (isset($this->environment['PHP_AUTH_USER'])) {
+            $basic_pass = isset($this->environment['PHP_AUTH_PW']) ? $this->environment['PHP_AUTH_PW'] : '';
+            return 'Basic ' . base64_encode($this->environment['PHP_AUTH_USER'] . ':' . $basic_pass);
+
+        } elseif (isset($this->environment['PHP_AUTH_DIGEST'])) {
+            return $this->environment['PHP_AUTH_DIGEST'];
+        }
+
+        return null;
     }
 }

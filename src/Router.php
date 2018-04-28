@@ -2,8 +2,10 @@
 
 namespace gamringer\PHPREST;
 
+use \gamringer\JSONPointer;
 use \gamringer\JSONPointer\Pointer;
 use \gamringer\PHPREST\Routing\ProvidesRoutes;
+use \gamringer\PHPREST\Exceptions\ResourceNotFoundException;
 
 class Router
 {
@@ -18,8 +20,6 @@ class Router
         if ($root !== null) {
             $this->setRoot($root);
         }
-
-        $this->dispatcher = new Dispatcher($this);
     }
 
     public function addProvider(ProvidesRoutes $provider)
@@ -49,23 +49,17 @@ class Router
             if (array_key_exists($subResource, $this->accessors)) {
                 continue;
             }
-            
+
             $this->fetchAccessors($subResource);
         }
     }
 
     public function route($path)
     {
-        return $this->pointer->get($path);
-    }
-
-    public function getDispatcher()
-    {
-        return $this->dispatcher;
-    }
-
-    public function addRoute($method, $model, $serviceCallable)
-    {
-        $this->dispatcher->defineController($method, $model, $serviceCallable);
+        try {
+            return $this->pointer->get($path);
+        } catch (JSONPointer\Exception $e) {
+            throw new ResourceNotFoundException('Resource not found for path: ' . $path, 0, $e);
+        }
     }
 }

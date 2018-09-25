@@ -4,7 +4,6 @@ namespace gamringer\PHPREST;
 
 use \gamringer\JSONPointer;
 use \gamringer\JSONPointer\Pointer;
-use \gamringer\PHPREST\Routing\ProvidesRoutes;
 use \gamringer\PHPREST\Exceptions\ResourceNotFoundException;
 
 class Router
@@ -20,11 +19,6 @@ class Router
         if ($root !== null) {
             $this->setRoot($root);
         }
-    }
-
-    public function addProvider(ProvidesRoutes $provider)
-    {
-        $provider->feed($this);
     }
 
     public function setRoot(&$root)

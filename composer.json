@@ -11,11 +11,11 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
+        "php": "~7.0",
         "gamringer/php-json-pointer": "@stable",
         "guzzlehttp/psr7": "@stable",
         "league/container": "^2.0",
-        "relay/relay": "~1.0",
+        "telegraph/telegraph": "~1.0",
         "ralouphie/getallheaders": "^2.0"
     },
     "require-dev": {

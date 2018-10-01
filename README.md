@@ -1,20 +1,21 @@
-JSONPointer
-============
+# PHP-REST
 
 A REST Specific framework using JSON-Pointer (RFC6901) for routing
 
-#License
-JSONPointer is licensed under the MIT license.
+## License
+PHP-REST is licensed under the MIT license.
 
-#Installation
+## Installation
+```bash
+$ composer require gamringer/php-rest
+```
 
-    composer require gamringer/php-rest
+### Tests
+```bash
+$ composer install
+$ phpunit
+```
 
-##Tests
-
-    composer install
-    phpunit
-    
-#Documentation
+## Documentation
 
 Coming up...

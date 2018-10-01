@@ -23,7 +23,7 @@ class GetterAccessor implements Accesses
             $pointedValue = $target->$getter();
             $pointedValue->setParent($target);
         }
-        
+
         return $pointedValue;
     }
 
@@ -35,6 +35,11 @@ class GetterAccessor implements Accesses
     public function unsetValue(&$target, $token)
     {
 
+    }
+
+    public function covers(&$target)
+    {
+        return true;
     }
 
     private function tokenToGetter($token)

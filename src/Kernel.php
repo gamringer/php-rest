@@ -47,7 +47,6 @@ class Kernel
         foreach ($response->getHeaders() as $header => $values) {
             foreach ($values as $value) {
                 header($header . ': ' . $value, false);
-                $this->container->get('logger-error')->debug('Setting Header: '.$header);
             }
         }
 

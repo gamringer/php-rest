@@ -13,12 +13,16 @@ class FooAPI extends BaseItem
         'books' => \gamringer\PHPREST\Example\Models\Collections\BookCollection::class,
     ];
 
+    protected static $handlers = [
+        'GET' => 'handler.root-get',
+    ];
+
     protected $authors;
     protected $books;
 
     public function __construct()
     {
-        
+
     }
 
     public static function getRoot()

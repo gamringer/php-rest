@@ -12,18 +12,25 @@ use \League\Container\Container;
 
 class Kernel extends BaseKernel
 {
-    public function init()
+    public function initialize(): void
     {
-        $container = new Container();
-        $container->addServiceProvider(new ServiceProvider());
-        
+        $this->container = new Container();
+
+        $this->container->share('environment', $this->environment);
+        $this->container->share('handler.root-get', '\gamringer\PHPREST\Example\Controllers\RootHandler');
+
+        $this->container->addServiceProvider(new ServiceProvider());
+
         $root = FooAPI::getRoot();
         $router = new Router($root);
-        $router->getDispatcher()->setContainer($container);
-        $router->addProvider(new RouteProvider());
+        $dispatcher = new \gamringer\PHPREST\ResourceDispatcher($router);
+        $dispatcher->setContainer($this->container);
 
-        $this->queueMiddleware(new CatchAll());
-        $this->queueMiddleware(new RequestReroot($this->environment->getValue('SCRIPT_NAME')));
-        $this->queueMiddleware(new JDispatch($router->getDispatcher()));
+        $dispatcherMiddleware = new \gamringer\PHPREST\Middlewares\Dispatch(
+            $dispatcher,
+            new \gamringer\PHPREST\Example\Factories\ErrorResponseFactory()
+        );
+
+        $this->queueMiddleware($dispatcherMiddleware);
     }
 }

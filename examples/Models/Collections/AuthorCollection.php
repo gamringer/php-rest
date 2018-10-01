@@ -8,11 +8,11 @@ use gamringer\PHPREST\Example\Models\AuthorModel;
 
 class AuthorCollection extends BaseCollection
 {
-    public static $accessor = \gamringer\PHPREST\Example\Accessors\CollectionItemAccessor::class;
+    public static $accessor = \gamringer\PHPREST\Accessors\CollectionItemAccessor::class;
 
     public function __construct()
     {
-        
+
     }
 
     public static function getCollectionItemModel()

@@ -7,7 +7,7 @@ use \gamringer\PHPREST\Example\Models\AuthorModel;
 
 class BookModel extends BaseItem
 {
-    public static $accessor = \gamringer\PHPREST\Example\Accessors\GetterAccessor::class;
+    public static $accessor = \gamringer\PHPREST\Accessors\GetterAccessor::class;
 
     public static $properties = [
         'author' => AuthorModel::class,
@@ -21,7 +21,7 @@ class BookModel extends BaseItem
 
         if (is_numeric($slug)) {
             $this->addFilter('id', $slug);
-        }  
+        }
     }
 
     public function getAuthor()

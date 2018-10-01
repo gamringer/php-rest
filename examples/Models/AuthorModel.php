@@ -7,7 +7,7 @@ use \gamringer\PHPREST\Example\Models\Collections\BookCollection;
 
 class AuthorModel extends BaseItem
 {
-    public static $accessor = \gamringer\PHPREST\Example\Accessors\GetterAccessor::class;
+    public static $accessor = \gamringer\PHPREST\Accessors\GetterAccessor::class;
 
     public static $properties = [
         'books' => BookCollection::class,

@@ -2,9 +2,10 @@
 
 namespace gamringer\PHPREST\Middlewares;
 
-use \Psr\Http\Message\RequestInterface;
-use \Telegraph\MiddlewareInterface;
-use \GuzzleHttp\Psr7;
+use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\MiddlewareInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 
 class CatchAll implements MiddlewareInterface
 {
@@ -20,11 +21,11 @@ class CatchAll implements MiddlewareInterface
         register_shutdown_function([$this, 'shutdownHandler'], $errorLog);
     }
 
-    public function __invoke (RequestInterface $request, callable $next = null)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $controller = $this->errorController;
         try {
-            return $next($request);
+            return $handler->handle($request);
 
         } catch (\ErrorException $e) {
             $this->errorLog->error($e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
@@ -34,9 +35,6 @@ class CatchAll implements MiddlewareInterface
             $this->errorLog->error($e->getMessage());
             return $controller($request, $e);
 
-        } catch (\Exception $e) {
-            $this->errorLog->error($e->getMessage());
-            return $controller($request, $e);
         }
     }
 

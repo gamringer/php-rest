@@ -6,10 +6,9 @@ namespace gamringer\PHPREST;
 
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\MiddlewareInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 use \GuzzleHttp\Psr7;
-use \Telegraph;
-use \Telegraph\MiddlewareInterface;
-use \Telegraph\DispatcherInterface;
 
 class Kernel
 {
@@ -18,16 +17,12 @@ class Kernel
 
     public function __construct(Environment $environment)
     {
+        $this->pipe = new \gamringer\Pipe\Pipe();
+
         $this->environment = $environment;
 
         $this->initialize();
 
-        $this->setDispatcher(new Telegraph\Dispatcher($this->middlewares));
-    }
-
-    public function setDispatcher(DispatcherInterface $dispatcher): void
-    {
-        $this->dispatcher = $dispatcher;
     }
 
     public function getEnvironment(): Environment
@@ -37,7 +32,7 @@ class Kernel
 
     public function handle(RequestInterface $request): ResponseInterface
     {
-        return $this->dispatcher->dispatch($request);
+        return $this->pipe->handle($request);
     }
 
     public function send(ResponseInterface $response): void
@@ -69,6 +64,6 @@ class Kernel
 
     protected function queueMiddleware(MiddlewareInterface $middleware): void
     {
-        $this->middlewares[] = $middleware;
+        $this->pipe->push($middleware);
     }
 }

@@ -6,7 +6,7 @@ use \gamringer\PHPREST\Resources\Item as BaseItem;
 
 class FooAPI extends BaseItem
 {
-    public static $accessor = \gamringer\PHPREST\Example\Accessors\GetterAccessor::class;
+    public static $accessor = \gamringer\PHPREST\Accessors\GetterAccessor::class;
 
     public static $properties = [
         'authors' => \gamringer\PHPREST\Example\Models\Collections\AuthorCollection::class,
@@ -23,11 +23,6 @@ class FooAPI extends BaseItem
     public function __construct()
     {
 
-    }
-
-    public static function getRoot()
-    {
-        return new static();
     }
 
     public function getAuthorsProperty()

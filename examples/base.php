@@ -1,7 +1,9 @@
 <?php
 
-ini_set('xdebug.var_display_max_depth', 10);
-ini_set('display_errors', true);
+declare(strict_types=1);
+
+ini_set('xdebug.var_display_max_depth', '10');
+ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 include dirname(__FILE__).'/../vendor/autoload.php';

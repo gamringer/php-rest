@@ -1,6 +1,6 @@
 <?php
 
-namespace gamringer\PHPREST\Example\Controllers;
+namespace gamringer\PHPREST\Example\Handlers;
 
 use \Psr\Http\Message\RequestInterface;
 use \GuzzleHttp\Psr7;

@@ -3,15 +3,11 @@ declare(strict_types=1);
 
 namespace gamringer\PHPREST;
 
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
-use \GuzzleHttp\Psr7;
-use \gamringer\PHPREST\Kernel;
-use \League\Container\Container;
-use \League\Container\ContainerAwareInterface;
-use \League\Container\ContainerAwareTrait;
-use \FastRoute;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 class ResourceDispatcher implements ContainerAwareInterface, RequestHandlerInterface
 {

@@ -14,7 +14,7 @@ class View
     protected $urlRoot;
     protected $urlRootScheme;
 
-    private $currentBlock;
+    private $currentBlock = null;
 
     public function __construct($template, $data = [], $blocks = [])
     {
@@ -82,7 +82,7 @@ class View
     {
         ob_start();
 
-        if (isset($this->currentBlock)) {
+        if ($this->currentBlock === null) {
             return;
         }
 
@@ -103,7 +103,7 @@ class View
 
         echo $this->blocks[$this->currentBlock];
 
-        unset($this->currentBlock);
+        $this->currentBlock = null;
     }
 
     public function extend($template, $data = [])

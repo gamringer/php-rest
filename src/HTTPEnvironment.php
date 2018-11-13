@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace gamringer\PHPREST;
 
 use GuzzleHttp\Psr7;
-use \Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class HTTPEnvironment extends Environment
 {
@@ -25,7 +25,7 @@ class HTTPEnvironment extends Environment
         if (!isset($this->request)) {
             list($protocolName, $protocolVersion) = explode('/', $this->environment['SERVER_PROTOCOL']);
             $scheme = 'http';
-            if (array_key_exists('HTTPS', $this->environment) && ['HTTPS'] == 'on') {
+            if (array_key_exists('HTTPS', $this->environment) && $this->environment['HTTPS'] == 'on') {
                 $scheme = 'https';
             }
 

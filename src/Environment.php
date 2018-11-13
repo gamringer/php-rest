@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace gamringer\PHPREST;
 
-use GuzzleHttp\Psr7\Request;
-
 class Environment
 {
     protected $stdOut;

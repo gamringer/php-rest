@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace gamringer\PHPREST;
 
-use \Psr\Http\Message\RequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\MiddlewareInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
-use \GuzzleHttp\Psr7;
-use \gamringer\Pipe\Pipe;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use gamringer\Pipe\Pipe;
 
 class Kernel
 {
@@ -31,7 +29,7 @@ class Kernel
         return $this->environment;
     }
 
-    public function handle(RequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return $this->pipe->handle($request);
     }

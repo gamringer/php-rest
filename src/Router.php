@@ -2,9 +2,9 @@
 
 namespace gamringer\PHPREST;
 
-use \gamringer\JSONPointer;
-use \gamringer\JSONPointer\Pointer;
-use \gamringer\PHPREST\Exceptions\ResourceNotFoundException;
+use gamringer\JSONPointer;
+use gamringer\JSONPointer\Pointer;
+use gamringer\PHPREST\Exceptions\ResourceNotFoundException;
 
 class Router
 {

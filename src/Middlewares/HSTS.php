@@ -2,11 +2,11 @@
 
 namespace gamringer\PHPREST\Middlewares;
 
-use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Server\MiddlewareInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
-use \GuzzleHttp\Psr7;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use GuzzleHttp\Psr7;
 
 class HSTS implements MiddlewareInterface
 {

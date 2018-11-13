@@ -3,7 +3,6 @@
 namespace gamringer\PHPREST\Accessors;
 
 use gamringer\JSONPointer\Access\Accesses;
-use gamringer\PHPREST\Resources\Resource;
 use gamringer\JSONPointer\VoidValue;
 
 class GetterAccessor implements Accesses

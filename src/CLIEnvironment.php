@@ -2,9 +2,8 @@
 
 namespace gamringer\PHPREST;
 
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
-use \Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class CLIEnvironment extends Environment
 {

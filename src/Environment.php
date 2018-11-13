@@ -20,7 +20,7 @@ class Environment
     public static function fromGlobals(): Environment
     {
         if (PHP_SAPI == 'cli') {
-            return new CLIEnvironment($_SERVER, STDOUT, STDIN, STDERR);
+            return new CLIEnvironment($_SERVER, STDOUT, STDIN);
         }
 
         return new HTTPEnvironment($_SERVER, fopen('php://output', 'w'), fopen('php://input', 'r+'), [

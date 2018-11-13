@@ -22,7 +22,8 @@
         "http-interop/http-factory-guzzle": "^1.0",
         "phpstan/phpstan": "^0.10.5",
         "phpmd/phpmd": "^2.6",
-        "phan/phan": "^1.1"
+        "phan/phan": "^1.1",
+        "squizlabs/php_codesniffer": "^3.3"
     },
     "autoload": {
         "psr-4": {

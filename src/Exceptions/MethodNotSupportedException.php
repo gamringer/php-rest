@@ -6,17 +6,17 @@ use gamringer\PHPREST\Resources\Resource;
 
 class MethodNotSupportedException extends RoutingException
 {
-	protected $resource;
+    protected $resource;
 
-	public function __construct(Resource $resource, $message = '', $code = 0, $previous = null)
-	{
-		$this->resource = $resource;
+    public function __construct(Resource $resource, $message = '', $code = 0, $previous = null)
+    {
+        $this->resource = $resource;
 
-		parent::__construct($message, $code, $previous);
-	}
+        parent::__construct($message, $code, $previous);
+    }
 
-	public function getResource()
-	{
-		return $this->resource;
-	}
+    public function getResource()
+    {
+        return $this->resource;
+    }
 }

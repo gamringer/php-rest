@@ -2,9 +2,10 @@
 
 namespace gamringer\PHPREST\Middlewares;
 
-use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Telegraph\MiddlewareInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\MiddlewareInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 
 class HPKP implements MiddlewareInterface
 {
@@ -26,9 +27,9 @@ class HPKP implements MiddlewareInterface
         $this->reportOnly = $reportOnly;
     }
 
-    public function __invoke (RequestInterface $request, callable $next = null)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $next($request);
+        $response = $handler->handle($request);
 
         $headerValue = '';
         foreach ($this->pins as $pin) {

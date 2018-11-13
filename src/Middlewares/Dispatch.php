@@ -6,6 +6,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
+use \gamringer\PHPREST\Exceptions\ResourceNotFoundException;
+use \gamringer\PHPREST\Exceptions\MethodNotSupportedException;
 
 class Dispatch implements MiddlewareInterface
 {

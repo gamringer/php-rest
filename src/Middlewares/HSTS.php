@@ -2,8 +2,10 @@
 
 namespace gamringer\PHPREST\Middlewares;
 
-use \Psr\Http\Message\RequestInterface;
-use \Telegraph\MiddlewareInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\MiddlewareInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 use \GuzzleHttp\Psr7;
 
 class HSTS implements MiddlewareInterface
@@ -21,10 +23,10 @@ class HSTS implements MiddlewareInterface
         $this->preload = $preload;
     }
 
-    public function __invoke (RequestInterface $request, callable $next = null)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($request->getUri()->getScheme() == 'https') {
-            $response = $next($request);
+            $response = $handler->handle($request);
 
             $hstsValue = 'max-age='.$this->duration;
             if ($this->includeSubdomains) {

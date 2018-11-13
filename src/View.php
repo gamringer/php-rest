@@ -88,7 +88,6 @@ class View
         }
 
         $this->currentBlock = $name;
-
     }
 
     public function endBlock()

@@ -29,12 +29,10 @@ class GetterAccessor implements Accesses
 
     public function &setValue(&$target, $token, &$value)
     {
-
     }
 
     public function unsetValue(&$target, $token)
     {
-
     }
 
     public function covers(&$target)

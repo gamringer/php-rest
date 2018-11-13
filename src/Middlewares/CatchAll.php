@@ -26,24 +26,21 @@ class CatchAll implements MiddlewareInterface
         $controller = $this->errorController;
         try {
             return $handler->handle($request);
-
         } catch (\ErrorException $e) {
             $this->errorLog->error($e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
             return $controller($request, $e);
-
         } catch (\Throwable $e) {
             $this->errorLog->error($e->getMessage());
             return $controller($request, $e);
-
         }
     }
 
-    public function errorHandler( $errno , $errstr, $errfile, $errline, $errcontext)
+    public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     {
         throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
     }
 
-    public function shutdownHandler( $errorLog )
+    public function shutdownHandler($errorLog)
     {
         $error = error_get_last();
         if ($error === null) {

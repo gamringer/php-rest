@@ -4,7 +4,7 @@ namespace gamringer\PHPREST\Resources;
 
 trait Child
 {
-	protected $parent;
+    protected $parent;
 
     public function setParent($parent)
     {

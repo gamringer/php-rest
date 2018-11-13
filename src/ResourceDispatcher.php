@@ -17,6 +17,8 @@ class ResourceDispatcher implements ContainerAwareInterface, RequestHandlerInter
 {
     use ContainerAwareTrait;
 
+    protected $router;
+
     public function __construct($router, $container)
     {
         $this->router = $router;

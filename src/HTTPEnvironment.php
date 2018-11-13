@@ -45,7 +45,7 @@ class HTTPEnvironment extends Environment
             if (array_key_exists('cookies', $this->parsed)) {
                 $this->request = $this->request->withCookieParams($this->parsed['cookies']);
             }
-            if(!array_key_exists('Content-Type', $headers)){
+            if (!array_key_exists('Content-Type', $headers)) {
             } elseif ($headers['Content-Type'] == 'application/json') {
                 $this->request = $this->request->withParsedBody(json_decode(Psr7\copy_to_string($this->stdIn)));
             } elseif ($headers['Content-Type'] == 'application/x-www-form-urlencoded') {
@@ -53,7 +53,7 @@ class HTTPEnvironment extends Environment
             } elseif ($headers['Content-Type'] == 'multipart/form-data') {
                 $this->request = $this->request
                             ->withParsedBody($this->parsed['post'])
-                            ->withUploadedFiles(Psr7\ServerRequest::normalizeFiles($parsed['files']))
+                            ->withUploadedFiles(Psr7\ServerRequest::normalizeFiles($this->parsed['files']))
                 ;
             }
         }
@@ -112,11 +112,9 @@ class HTTPEnvironment extends Environment
     {
         if (isset($this->environment['REDIRECT_HTTP_AUTHORIZATION'])) {
             return $this->environment['REDIRECT_HTTP_AUTHORIZATION'];
-
         } elseif (isset($this->environment['PHP_AUTH_USER'])) {
             $basic_pass = isset($this->environment['PHP_AUTH_PW']) ? $this->environment['PHP_AUTH_PW'] : '';
             return 'Basic ' . base64_encode($this->environment['PHP_AUTH_USER'] . ':' . $basic_pass);
-
         } elseif (isset($this->environment['PHP_AUTH_DIGEST'])) {
             return $this->environment['PHP_AUTH_DIGEST'];
         }

@@ -4,9 +4,10 @@ namespace gamringer\PHPREST\Resources;
 
 class Item extends Resource
 {
+    protected static $properties = [];
+
     public function fetch($id)
     {
-        
     }
 
     public static function getPropertyModels()

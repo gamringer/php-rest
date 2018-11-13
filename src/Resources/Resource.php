@@ -62,7 +62,11 @@ abstract class Resource implements HasParent
     public function getMethodHandler($method)
     {
         if (!array_key_exists($method, static::$handlers)) {
-            throw new MethodNotSupportedException($this, 'Method '.$method.' is not supported by resource ' . static::class, 2);
+            throw new MethodNotSupportedException(
+                $this,
+                'Method '.$method.' is not supported by resource ' . static::class,
+                2
+            );
         }
 
         return static::$handlers[$method];

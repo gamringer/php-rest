@@ -9,20 +9,21 @@ use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \GuzzleHttp\Psr7;
+use \gamringer\Pipe\Pipe;
 
 class Kernel
 {
+    protected $pipe;
     protected $environment;
     protected $middlewares = [];
 
     public function __construct(Environment $environment)
     {
-        $this->pipe = new \gamringer\Pipe\Pipe();
+        $this->pipe = new Pipe();
 
         $this->environment = $environment;
 
         $this->initialize();
-
     }
 
     public function getEnvironment(): Environment
@@ -37,12 +38,10 @@ class Kernel
 
     public function initialize(): void
     {
-
     }
 
     public function shutdown(): void
     {
-
     }
 
     protected function queueMiddleware(MiddlewareInterface $middleware): void

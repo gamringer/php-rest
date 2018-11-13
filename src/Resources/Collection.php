@@ -4,21 +4,6 @@ namespace gamringer\PHPREST\Resources;
 
 abstract class Collection extends Resource implements CollectsItems
 {
-    public function post()
-    {
-        
-    }
-
-    public function get()
-    {
-        
-    }
-
-    public function fetch()
-    {
-        
-    }
-
     public function getCollectionItem($slug)
     {
         $class = $this::getCollectionItemModel();

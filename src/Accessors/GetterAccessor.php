@@ -40,9 +40,9 @@ class GetterAccessor implements Accesses
         return true;
     }
 
-    private function tokenToGetter($token)
+    private function tokenToGetter(string $token)
     {
-        return 'get' . preg_replace_callback('/(?:^|[^a-z])([a-z])/', function ($match) {
+        return 'get' . preg_replace_callback('/(?:^|[^a-z])([a-z])/i', function ($match) {
             return strtoupper($match[1]);
         }, $token);
     }

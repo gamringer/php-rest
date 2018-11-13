@@ -11,16 +11,19 @@ class RequestReroot implements MiddlewareInterface
 {
     protected $location;
 
-    public function __construct($location)
+    public function __construct(string $location)
     {
         $this->location = $location;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $path = preg_replace('#^'.$this->location.'#', '', $request->getUri()->getPath());
-        $uri = $request->getUri()->withPath($path);
-
-        return $handler->handle($request->withUri($uri));
+        $path = preg_replace('/^'.preg_quote($this->location, '/').'/', '', $request->getUri()->getPath());
+        if ($path !== null) {
+            $uri = $request->getUri()->withPath($path);
+            $request = $request->withUri($uri);
+        }
+        
+        return $handler->handle($request);
     }
 }

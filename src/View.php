@@ -32,7 +32,7 @@ class View
         $this->data = array_merge($this->data, $data);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         ob_start();
 
@@ -41,6 +41,9 @@ class View
         include $this->template;
 
         $content = ob_get_clean();
+        if ($content === false) {
+            return '';
+        }
 
         if (isset($this->parent)) {
             $parentView = new View($this->parent, $this->parentData, $this->blocks);

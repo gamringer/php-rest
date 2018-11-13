@@ -30,11 +30,4 @@ class CollectionItemAccessor implements Accesses
     {
         return true;
     }
-
-    private function tokenToGetter($token)
-    {
-        return 'get' . preg_replace_callback('/(?:^|[^a-z])([a-z])/', function ($match) {
-            return strtoupper($match[1]);
-        }, $token);
-    }
 }

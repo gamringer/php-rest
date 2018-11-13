@@ -26,12 +26,16 @@ class ServiceProvider extends AbstractServiceProvider
             ->withArguments(['api-router', $container])
         ;
 
+        $this->container->share('http.response-factory', '\Http\Factory\Guzzle\ResponseFactory');
+        $this->container->share('http.stream-factory', '\Http\Factory\Guzzle\StreamFactory');
         $this->container->share('error-factory', '\gamringer\PHPREST\Example\Factories\ErrorResponseFactory');
 
         $this->container->share('middleware.dispatch', '\gamringer\PHPREST\Middlewares\Dispatch')
             ->withArguments(['api-dispatcher', 'error-factory'])
         ;
 
-        $this->container->share('handler.root-get', '\gamringer\PHPREST\Example\Handlers\RootHandler');
+        $this->container->share('handler.root-get', '\gamringer\PHPREST\Example\Handlers\RootHandler')
+            ->withArguments(['http.response-factory', 'http.stream-factory'])
+        ;
     }
 }

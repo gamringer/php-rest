@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace gamringer\PHPREST;
 
 use GuzzleHttp\Psr7;
+use \Psr\Http\Message\ResponseInterface;
 
 class HTTPEnvironment extends Environment
 {
@@ -121,5 +122,22 @@ class HTTPEnvironment extends Environment
         }
 
         return null;
+    }
+
+    public function send(ResponseInterface $response): void
+    {
+        http_response_code($response->getStatusCode());
+
+        foreach ($response->getHeaders() as $header => $values) {
+            foreach ($values as $value) {
+                header($header . ': ' . $value, false);
+            }
+        }
+
+        $size = $response->getBody()->getSize();
+        if ($size > 0) {
+            header('Content-Length: ' . $size);
+        }
+        Psr7\copy_to_stream($response->getBody(), $this->getStdOut());
     }
 }

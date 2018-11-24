@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace gamringer\PHPREST;
@@ -6,27 +7,26 @@ namespace gamringer\PHPREST;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
+use gamringer\PHPREST\RequestHandling\HandlerProviderInterface;
+use gamringer\PHPREST\Routing\ResourceRouterInterface;
 
-class ResourceDispatcher implements ContainerAwareInterface, RequestHandlerInterface
+class ResourceDispatcher implements RequestHandlerInterface
 {
-    use ContainerAwareTrait;
-
     protected $router;
+    protected $handlerProvider;
 
-    public function __construct($router, $container)
+    public function __construct(ResourceRouterInterface $router, HandlerProviderInterface $handlerProvider)
     {
         $this->router = $router;
-        $this->container = $container;
+        $this->handlerProvider = $handlerProvider;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $resource = $this->router->route($request->getUri()->getPath());
+        $resource = $this->router->route($request);
         $handlerName = $resource->getMethodHandler($request->getMethod());
-        $handler = $this->container->get($handlerName);
+        $handler = $this->handlerProvider->provide($handlerName);
 
-        return $handler($request, $resource);
+        return $handler->handle($request, $resource);
     }
 }

@@ -1,12 +1,16 @@
 <?php
 
-namespace gamringer\PHPREST;
+namespace gamringer\PHPREST\Routing\Routers;
 
 use gamringer\JSONPointer;
 use gamringer\JSONPointer\Pointer;
 use gamringer\PHPREST\Exceptions\ResourceNotFoundException;
+use gamringer\PHPREST\Exceptions\RoutingException;
+use gamringer\PHPREST\Resources\Resource;
+use gamringer\PHPREST\Routing\ResourceRouterInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class Router
+class JsonPointerRouter implements ResourceRouterInterface
 {
     protected $pointer;
     protected $root;
@@ -48,12 +52,20 @@ class Router
         }
     }
 
-    public function route($path)
+    public function route(ServerRequestInterface $request): Resource
     {
+        $path = $request->getUri()->getPath();
+
         try {
-            return $this->pointer->get($path);
+            $result = $this->pointer->get($path);
         } catch (JSONPointer\Exception $e) {
             throw new ResourceNotFoundException('Resource not found for path: ' . $path, 0, $e);
         }
+
+        if ($result instanceof Resource) {
+            return $result;
+        }
+
+        throw new RoutingException("Resource at $path is not a ".Resource::class);
     }
 }

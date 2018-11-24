@@ -19,11 +19,14 @@ class ServiceProvider extends AbstractServiceProvider
         $container = $this->getContainer();
 
         $this->container->share('api-root', '\gamringer\PHPREST\Example\FooAPI');
-        $this->container->share('api-router', '\gamringer\PHPREST\Router')
+        $this->container->share('api-router', '\gamringer\PHPREST\Routing\Routers\JsonPointerRouter')
             ->withArguments(['api-root'])
         ;
+        $this->container->share('handler-provider', \gamringer\PHPREST\RequestHandling\Providers\ContainerHandlerProvider::class)
+            ->withArguments([$container])
+        ;
         $this->container->share('api-dispatcher', '\gamringer\PHPREST\ResourceDispatcher')
-            ->withArguments(['api-router', $container])
+            ->withArguments(['api-router', 'handler-provider'])
         ;
 
         $this->container->share('http.response-factory', '\Http\Factory\Guzzle\ResponseFactory');

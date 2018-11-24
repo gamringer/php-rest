@@ -8,8 +8,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use gamringer\Pipe\Pipe;
+use \Psr\Http\Server\RequestHandlerInterface;
 
-class Kernel
+class Kernel implements RequestHandlerInterface
 {
     protected $pipe;
     protected $environment;

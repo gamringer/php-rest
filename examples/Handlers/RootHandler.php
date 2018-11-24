@@ -2,13 +2,14 @@
 
 namespace gamringer\PHPREST\Example\Handlers;
 
-use \Psr\Http\Message\RequestInterface;
-use \Psr\Http\Message\ResponseFactoryInterface;
-use \Psr\Http\Message\StreamFactoryInterface;
-use \GuzzleHttp\Psr7;
-use \gamringer\PHPREST\Resources\Resource;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use gamringer\PHPREST\Resources\Resource;
+use gamringer\PHPREST\RequestHandling\RequestHandlerInterface;
 
-class RootHandler
+class RootHandler implements RequestHandlerInterface
 {
     protected $responseFactory;
     protected $streamFactory;
@@ -19,7 +20,7 @@ class RootHandler
         $this->streamFactory = $streamFactory;
     }
 
-    public function __invoke(RequestInterface $request, Resource $resource)
+    public function handle(ServerRequestInterface $request, Resource $resource): ResponseInterface
     {
         return $this->responseFactory
             ->createResponse(200)

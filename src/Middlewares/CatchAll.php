@@ -9,12 +9,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class CatchAll implements MiddlewareInterface
 {
-    protected $errorController;
+    protected $defaultHandler;
     protected $errorLog;
 
-    public function __construct($errorController, $errorLog)
+    public function __construct(RequestHandlerInterface $defaultHandler, $errorLog)
     {
-        $this->errorController = $errorController;
+        $this->defaultHandler = $defaultHandler;
         $this->errorLog = $errorLog;
 
         set_error_handler([$this, 'errorHandler']);
@@ -23,15 +23,14 @@ class CatchAll implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $controller = $this->errorController;
         try {
             return $handler->handle($request);
         } catch (\ErrorException $e) {
             $this->errorLog->error($e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
-            return $controller($request, $e);
+            return $this->defaultHandler->handle($request);
         } catch (\Throwable $e) {
             $this->errorLog->error($e->getMessage());
-            return $controller($request, $e);
+            return $this->defaultHandler->handle($request);
         }
     }
 

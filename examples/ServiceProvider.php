@@ -12,6 +12,7 @@ class ServiceProvider extends AbstractServiceProvider
         'api-dispatcher',
         'handler.root-get',
         'middleware.dispatch',
+        'middleware.catchall',
     ];
 
     public function register()
@@ -37,7 +38,19 @@ class ServiceProvider extends AbstractServiceProvider
             ->withArguments(['api-dispatcher', 'error-factory'])
         ;
 
+        $this->container->share('middleware.catchall', '\gamringer\PHPREST\Middlewares\CatchAll')
+            ->withArguments(['handler.error', 'logger'])
+        ;
+        $this->container->share('log-handler', '\Monolog\Handler\NullHandler');
+        $this->container->share('logger', '\Monolog\Logger')
+            ->withArguments(['main-logger'])
+            ->withMethodCall('pushHandler', ['log-handler'])
+        ;
+
         $this->container->share('handler.root-get', '\gamringer\PHPREST\Example\Handlers\RootHandler')
+            ->withArguments(['http.response-factory', 'http.stream-factory'])
+        ;
+        $this->container->share('handler.error', '\gamringer\PHPREST\Example\Handlers\ErrorHandler')
             ->withArguments(['http.response-factory', 'http.stream-factory'])
         ;
     }

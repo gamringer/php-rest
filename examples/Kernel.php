@@ -19,6 +19,7 @@ class Kernel extends BaseKernel
 
         $this->container->addServiceProvider(new ServiceProvider());
 
+        $this->queueMiddleware($this->container->get('middleware.catchall'));
         $this->queueMiddleware($this->container->get('middleware.dispatch'));
     }
 }

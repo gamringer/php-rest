@@ -31,9 +31,11 @@ class HTTPEnvironment extends Environment
 
             $headers = $this->getallheaders();
 
+            $host = $this->environment['HTTP_HOST'] ?? $this->environment['SERVER_NAME'];
+
             $this->request = new Psr7\ServerRequest(
                 $this->environment['REQUEST_METHOD'],
-                $scheme.'://'.$this->environment['HTTP_HOST'].$this->environment['REQUEST_URI'],
+                $scheme.'://'.$host.$this->environment['REQUEST_URI'],
                 $headers,
                 $this->stdIn,
                 $protocolVersion

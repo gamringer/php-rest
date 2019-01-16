@@ -26,11 +26,23 @@ class CatchAll implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (\ErrorException $e) {
-            $this->errorLog->error($e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+            $this->logException($e);
             return $this->defaultHandler->handle($request);
         } catch (\Throwable $e) {
-            $this->errorLog->error($e->getMessage());
+            $this->logException($e);
             return $this->defaultHandler->handle($request);
+        }
+    }
+
+    private function logException(\Throwable $e)
+    {
+        $this->errorLog->error($e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+        foreach ($e->getTrace() as $trace) {
+            if (isset($trace['file'])) {
+                $this->errorLog->debug("{$trace['class']}{$trace['type']}{$trace['function']}() called in {$trace['file']}:{$trace['line']}");
+            } else {
+                $this->errorLog->debug("{$trace['class']}{$trace['type']}{$trace['function']}()");
+            }
         }
     }
 

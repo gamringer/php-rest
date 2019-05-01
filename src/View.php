@@ -82,7 +82,7 @@ class View
     {
         ob_start();
 
-        if ($this->currentBlock === null) {
+        if ($this->currentBlock !== null) {
             return;
         }
 

@@ -38,11 +38,14 @@ class CatchAll implements MiddlewareInterface
     {
         $this->errorLog->error($e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
         foreach ($e->getTrace() as $trace) {
+            $msg = "{$trace['function']}()";
             if (isset($trace['file'])) {
-                $this->errorLog->debug("{$trace['class']}{$trace['type']}{$trace['function']}() called in {$trace['file']}:{$trace['line']}");
-            } else {
-                $this->errorLog->debug("{$trace['class']}{$trace['type']}{$trace['function']}()");
+                $msg .= " called in {$trace['file']}:{$trace['line']}";
             }
+            if (isset($trace['class'])) {
+                $msg = "{$trace['class']}{$trace['type']}$msg";
+            }
+            $this->errorLog->debug($msg);
         }
     }
 
